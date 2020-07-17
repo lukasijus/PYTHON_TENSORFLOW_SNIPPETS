@@ -34,7 +34,7 @@ loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
 
 # This untrained model gives probabilities close to random (1/10 for each class), so the initial loss should be close to -tf.log(1/10) ~= 2.3.
 
-loss_fn(img_train[:1], predictions).numpy()
+# loss_fn(img_train[:1], predictions).numpy()
 
 # Compile model
 model.compile(optimizer='adam',
@@ -53,5 +53,5 @@ model.evaluate(img_test, labels_test)
 
 probability_model = tf.keras.Sequential([
   model,
-  tf.keras.layers.Softmax()
+  # tf.keras.layers.Softmax()
 ])

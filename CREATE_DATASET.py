@@ -1,9 +1,9 @@
 import tensorflow as tf
 import pathlib
 
-url = ''
+url =  "https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz"
 data_dir = tf.keras.utils.get_file(
-    origin='',
+    origin=url,
     fname='flower_photos')
 
 data_dir = pathlib.Path(data_dir)
@@ -17,6 +17,8 @@ img_width = 180
 
 # It's good practice to use a validation split when developing your model. We will use 80% of the images for training, and 20% for validation.
 
+
+# Use this for tensorflow  > 2.4
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
   data_dir,
   validation_split=0.2,
@@ -106,7 +108,7 @@ history = model.fit(
   train_ds,
   batch_size=batch_size,
   validation_data=val_ds,
-  epochs=1,
+  epochs=5,
   callbacks=[tensorboard_callback]
 )
 
