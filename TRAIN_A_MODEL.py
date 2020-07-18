@@ -76,7 +76,10 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 exec_time = datetime.datetime.now() - start_time
 TIME = str(exec_time.seconds) + '_SECONDS_'
-plot_name = TIME  + str(loss_str) + '_LOSS_' + str(accuracy_str) + '_ACCURACY_'  + str(EPOCH) + '_EPOCHS_' + str(LAYERS) + '_LAYERS_' + '.png'
+IMG_SHAPE = str(image_shape)
+LOSS = str(loss_str) + '_LOSS_' + str(accuracy_str) + '_ACCURACY_'
+EPOCH = str(EPOCH) + '_EPOCHS_' + str(LAYERS) + '_LAYERS_'
+plot_name = TIME + IMG_SHAPE + LOSS + EPOCH + '.png'
 plot_file_name = os.path.join(os.path.join(os.path.abspath(''), 'loss_acc_plots'), plot_name)
 print(plot_file_name)
 plt.savefig(plot_file_name)
