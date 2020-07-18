@@ -85,3 +85,15 @@ def plot_images_grid_with_labels(img_arr, labels = [], row = 1, col = 1):
         count += 1
     plt.tight_layout()
     plt.show()
+
+def plot_images_grid_with_labels(img_arr, labels = [], predictions = [], row = 1, col = 1):
+    fig, axes = plt.subplots(row, col, figsize = (20, 20))
+    axes = axes.flatten()
+    count = 0
+    for img, ax in zip(img_arr, axes):
+        ax.imshow(img)
+        title = labels[count] + predictions[count]
+        ax.set_title(title)
+        count += 1
+    plt.tight_layout()
+    plt.show()
