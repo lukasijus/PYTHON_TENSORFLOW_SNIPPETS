@@ -6,10 +6,16 @@ train_examples, test_examples, classes, train_dir, test_dir = make_train_and_tes
 
 data_gen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
 
-TARGET_SIZE = (50, 50)
+TARGET_SIZE = (224, 224)
 IMAGE_SHAPE = (TARGET_SIZE[0], TARGET_SIZE[1], 3)
 BATCH_SIZE = 32
 CLASS_MODE = 'binary'
+
+def image_shape():
+    return  IMAGE_SHAPE
+
+def class_names():
+    return classes
 
 def create_dataset(plot = False):
     train_data = data_gen.flow_from_directory(
