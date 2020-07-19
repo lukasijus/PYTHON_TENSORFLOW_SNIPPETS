@@ -13,7 +13,7 @@ train_data, test_data, image_shape, BATCH_SIZE, classes = create_dataset()
 # Build a model
 from BUILD_A_MODEL import model, mobilenet_model
 
-model = mobilenet_model()
+model = model()
 
 # Compile a model
 model.compile(
@@ -23,7 +23,7 @@ model.compile(
 
 # # Iteration parameters
 LAYERS = len(model.layers)
-EPOCH = 50
+EPOCH = 2
 
 
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
