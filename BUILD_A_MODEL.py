@@ -31,7 +31,7 @@ def mobilenet_model():
                                                    weights='imagenet')
     base_model.trainable = False
     global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
-    prediction_layer = tf.keras.layers.Dense(num_classes)
+    prediction_layer = tf.keras.layers.Dense(num_classes, activation='softmax')
 
     return tf.keras.Sequential([
         base_model,
