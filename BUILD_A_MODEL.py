@@ -74,4 +74,12 @@ def xception_model():
 
     return model, len(base_model.layers) + 2
 
-
+def xception_model_org():
+    return tf.keras.applications.Xception(
+    include_top=True,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classifier_activation="softmax",
+)

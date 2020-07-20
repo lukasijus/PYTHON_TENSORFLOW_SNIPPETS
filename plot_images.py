@@ -148,6 +148,11 @@ def predict_image(name, image_shape, model, class_names):
     img = cv2.imread(name)
     size = (image_shape[0], image_shape[1])
     img = cv2.resize(img, dsize=size)
+    img = np.asarray(img)
+    # convert from integers to floats
+    img = img.astype('float32')
+    # normalize to the range 0-1
+    img /= 255.0
     img_to_prediction = np.reshape(img,[1,image_shape[0],image_shape[1],image_shape[2]])
     print(img_to_prediction.shape)
     prediction = model.predict(img_to_prediction)
@@ -188,6 +193,11 @@ def predict_webcam_image(image_shape, model, class_names):
             size = (image_shape[0], image_shape[1])
             frame = frame[0:400, 0:400]
             img = cv2.resize(frame, dsize=size)
+            img = np.asarray(img)
+            # convert from integers to floats
+            img = img.astype('float32')
+            # normalize to the range 0-1
+            img /= 255.0
             img_to_prediction = np.reshape(img, [1, image_shape[0], image_shape[1], image_shape[2]])
             prediction = model.predict(img_to_prediction)
             index = np.argmax(prediction)
