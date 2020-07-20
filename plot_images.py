@@ -2,8 +2,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import math
+import os
 
 from colour import Color
+import numpy as np
+import cv2
 
 red = Color("red")
 
@@ -97,3 +100,132 @@ def plot_images_grid_with_labels(img_arr, labels = [], predictions = [], row = 1
         count += 1
     plt.tight_layout()
     plt.show()
+
+def plotbatch_v2(name, batch_size, test_labels,test_images, image_shape, class_names,predictions, save=False):
+    index = 0
+    rows = math.ceil(math.sqrt(batch_size) * 0.6)
+    cols = math.ceil(math.sqrt(batch_size) * 1.4)
+    fig, axes = plt.subplots(rows, cols)
+    fig.suptitle(name)
+    axes = axes.flatten()
+    plt.subplots_adjust(
+        left=0.03,
+        bottom=0.13,
+        right=0.98,
+        top=0.93,
+        wspace=0.95,
+        hspace=0.98)
+    plt.grid(False)
+    for image in test_images:
+        rect = patches.Rectangle((0, 0), image_shape[0], image_shape[1], linewidth=5, edgecolor='g', facecolor='none')
+        class_name_index = 0
+        highest_prediction = 0
+        highest_prediction_index = 0
+        for value in predictions[index]:
+            if value > highest_prediction:
+                highest_prediction = value
+                highest_prediction_index = class_name_index
+            class_name_index += 1
+        axes[index].set_xlabel('P: ' + str(float("{:.2f}".format(highest_prediction))) +
+                   '\n' + 'PC: ' + class_names[highest_prediction_index] +
+                   '\n' + 'GTC: ' + class_names[int(test_labels[index])],
+                   fontsize = 6)
+        if highest_prediction_index != test_labels[index]:
+            rect = patches.Rectangle((0, 0), image_shape[0], image_shape[1], linewidth=5, edgecolor='r', facecolor='none')
+        axes[index].add_patch(rect)
+        axes[index].xaxis.set_label_coords(0.05, -0.025)
+        axes[index].imshow(test_images[index])
+        axes[index].set_yticklabels([])
+        axes[index].set_xticklabels([])
+        index += 1
+    if save:
+        name = name + '.png'
+        name = os.path.join(os.path.join(os.path.abspath(''), 'prediction_plots'), name)
+        plt.savefig(name)
+    plt.show()
+
+def predict_image(name, image_shape, model, class_names):
+    img = cv2.imread(name)
+    size = (image_shape[0], image_shape[1])
+    img = cv2.resize(img, dsize=size)
+    img_to_prediction = np.reshape(img,[1,image_shape[0],image_shape[1],image_shape[2]])
+    print(img_to_prediction.shape)
+    prediction = model.predict(img_to_prediction)
+    print(prediction)
+    index = np.argmax(prediction)
+    name = class_names[index]
+    percent = float("{:.2f}".format(prediction[0][index]))
+    print('Predicted: ', name, ' with ', percent, '% accuracy')
+    img_name = 'Predicted: ' + name + ' with ' + str(percent) + '% accuracy'
+    cv2.imshow(img_name, img)
+    cv2.waitKey()
+
+def predict_webcam_image(image_shape, model, class_names):
+    cam = cv2.VideoCapture(0)
+
+    cv2.namedWindow("test")
+
+    img_counter = 0
+
+    while True:
+        ret, frame = cam.read()
+        if not ret:
+            print("failed to grab frame")
+            break
+        cv2.imshow("test", frame[0:400, 0:400])
+
+        k = cv2.waitKey(1)
+        if k % 256 == 27:
+            # ESC pressed
+            print("Escape hit, closing...")
+            break
+        elif k % 256 == 32:
+            # SPACE pressed
+            # img_name = "opencv_frame_{}.png".format(img_counter)
+            # cv2.imwrite(img_name, frame)
+            # print("{} written!".format(img_name))
+            img_counter += 1
+            size = (image_shape[0], image_shape[1])
+            frame = frame[0:400, 0:400]
+            img = cv2.resize(frame, dsize=size)
+            img_to_prediction = np.reshape(img, [1, image_shape[0], image_shape[1], image_shape[2]])
+            prediction = model.predict(img_to_prediction)
+            index = np.argmax(prediction)
+            name = class_names[index]
+            percent = float("{:.2f}".format(prediction[0][index]))
+            print('Predicted: ', name, ' with ', percent, '% accuracy')
+            img_name = 'Predicted: ' + name + ' with ' + str(percent) + '% accuracy'
+            cv2.imshow(img_name, img)
+    cam.release()
+    cv2.destroyAllWindows()
+
+def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation = inter)
+
+    # return the resized image
+    return resized

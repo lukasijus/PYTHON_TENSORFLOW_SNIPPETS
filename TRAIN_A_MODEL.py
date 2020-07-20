@@ -11,10 +11,10 @@ train_data, test_data, image_shape, BATCH_SIZE, classes = create_dataset()
 
 
 # Build a model
-from BUILD_A_MODEL import model, mobilenet_model
+from BUILD_A_MODEL import model, mobilenet_model, vgg19_model, xception_model
 
-model = model()
-
+model, LAYERS = xception_model()
+print(LAYERS)
 # Compile a model
 model.compile(
     optimizer='adam',
@@ -22,8 +22,8 @@ model.compile(
     metrics=['accuracy'])
 
 # # Iteration parameters
-LAYERS = len(model.layers)
-EPOCH = 2
+
+EPOCH = 5
 
 
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -57,7 +57,7 @@ EPOCH = len(history.history['loss'])
 
 exec_time = datetime.datetime.now() - start_time
 TIME = str(exec_time.seconds) + '_SECONDS_'
-IMG_SHAPE = str(image_shape)
+IMG_SHAPE = str(image_shape) + '_'
 LOSS = str(loss_str) + '_LOSS_' + str(accuracy_str) + '_ACCURACY_'
 EPOCH = str(EPOCH) + '_EPOCHS_' + str(LAYERS) + '_LAYERS_'
 model_name = TIME + IMG_SHAPE + LOSS + EPOCH + '.h5'

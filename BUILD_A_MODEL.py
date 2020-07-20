@@ -33,14 +33,45 @@ def mobilenet_model():
     global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
     prediction_layer = tf.keras.layers.Dense(num_classes, activation='softmax')
 
-    return tf.keras.Sequential([
+    model =  tf.keras.Sequential([
         base_model,
         global_average_layer,
         prediction_layer
     ])
 
+    return model, len(base_model.layers) + 2
 
+def vgg19_model():
+    base_model = tf.keras.applications.VGG19(input_shape=image_shape,
+                                             include_top=False,
+                                             weights='imagenet')
 
+    base_model.trainable = False
+    global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
+    prediction_layer = tf.keras.layers.Dense(num_classes, activation='softmax')
 
+    model = tf.keras.Sequential([
+        base_model,
+        global_average_layer,
+        prediction_layer
+    ])
+
+    return model, len(base_model.layers) + 2
+
+def xception_model():
+    base_model = tf.keras.applications.Xception(input_shape=image_shape,
+                                             include_top=False,
+                                             weights='imagenet')
+    base_model.trainable = False
+    global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
+    prediction_layer = tf.keras.layers.Dense(num_classes, activation='softmax')
+
+    model = tf.keras.Sequential([
+        base_model,
+        global_average_layer,
+        prediction_layer
+    ])
+
+    return model, len(base_model.layers) + 2
 
 
